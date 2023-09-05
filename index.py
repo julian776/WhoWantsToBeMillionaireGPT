@@ -1,40 +1,54 @@
 from app import game
 from app.saver import saver
 from app.loaders import loaders
-from app.screen_manager import screen_manager #Easy notation
+from app.screen_manager import screen_manager  # Easy notation
+import tkinter as tk
+from dotenv import load_dotenv
+from questions.questions_repository import QuestionsRepository
+
+load_dotenv()
 
 QUESTIONS = ["questions1.txt", "questions2.txt", "questions3.txt", "questions4.txt", "questions5.txt"]
 SAVE_FILE = "save/save.txt"
 
-if __name__ == '__main__':
-    loaders.load_game()
-    while True: #Wait yor a valid input
-        request = loaders.load_menu()
-        if request == "0":
-            validate = "registered"
-            while validate == "registered": #Validate if already registered
-                user = input("Register your username: ")
-                validate = saver.validate_user(user)
-            actual_game = game.game(1, 00)
-            break
-        elif request == "1":
-            user = input("Please type your username: ")
-            actual_game = loaders.load_user(SAVE_FILE ,user)
-            break
-        else:
-            print("\nPlease enter again.")
-    while actual_game.get_round() < 6: #Loop of questions and answers
-        question = loaders.load_question(QUESTIONS, actual_game.get_round())
-        screen_manager.screen_updater(actual_game, question)
-        print("To save your progress type save")
-        answer = input("Type your answer: ")
-        game.game_manager.validate_answer(actual_game, answer, question, user)
-    print("\nYou Won ", actual_game.get_cash())
-    saver(actual_game, user, file="legend.txt")    
+# Create a Tkinter window
+root = tk.Tk()
+root.geometry("800x600")
 
+# Create frames
+app = tk.Frame(root)
+question_section = tk.Frame(app)
 
+status_label = tk.Label(root, text="")
+status_label.pack()
 
-    
-    
+answer_entry = tk.Entry(root, width=30)
+answer_entry.pack()
 
+actual_game = game.game(1, 00)
+question = None
 
+repo = QuestionsRepository()
+def display_next_question():
+    question = repo.get_questionChatGPT()
+    print("question: ", question)
+    screen_manager.screen_updater(app, question_section, actual_game, status_label, question, check_answer)
+
+def check_answer(a, b):
+    print(a, b)
+    result_label = tk.Label(question_section)
+    if a == b:
+        result_label.config(text="Correct!", fg="green")
+    else:
+        result_label.config(text="Incorrect.", fg="red")
+    result_label.grid(row=7, column=2)
+
+    root.after(2000, display_next_question)
+
+display_next_question()
+
+app.pack()
+question_section.pack()
+
+# Start the Tkinter event loop
+root.mainloop()

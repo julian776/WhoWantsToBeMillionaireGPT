@@ -1,24 +1,34 @@
 from time import sleep
 from os import system, name
+import tkinter as tk
+
+from questions.question import Question
 
 class screen_manager:
-    def show_question(question):
-        print(question[0], "\n")
-        print("a)  ", question[1], "b)  ", question[2])
-        print("c)  ", question[3], "d)  ", question[4], "\n")
+    def show_question(frame, question: Question, check_answer):
+        # Create a label to display the question
+        question_label = tk.Label(frame, text=question.question, wraplength=300, bg="blue")
+        question_label.grid(row=2, column=2)
 
-    def screen_updater(manager, question):
+        # Create buttons for the multiple-choice options
+        option_buttons = []
+        row=3
+        for i in ['a', 'b', 'c', 'd']:
+            option_button = tk.Button(frame, text=question.options[i], command= lambda a=i, b=question.answer: check_answer(a,b))
+            option_buttons.append(option_button)
+            option_button.grid(row=row, column=2)
+            row+=1
+
+    def screen_updater(frame_app, frame_question, manager, status_label, question, check_answer):
         round = manager.get_round()
         cash = manager.get_cash()
-        screen_manager.clean()
-        print("\nRound ",round,"      Cash Earned", cash, "\n")
-        screen_manager.show_question(question)
+        info_text = str("\nRound " + str(round) + " Cash Earned " + str(cash) + "\n")
+        status_label.config(text=info_text)
+        screen_manager.show_question(frame_question, question, check_answer)
 
-    def clean():
-        if name == 'nt':
-            _ = system('cls')
-        else:
-            _ = system('clear')
+    def clean(frame):
+        for widget in frame.winfo_children():
+            widget.destroy()
 
 
     
