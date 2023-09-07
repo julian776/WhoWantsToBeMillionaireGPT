@@ -31,12 +31,16 @@ question = None
 
 repo = QuestionsRepository()
 def display_next_question():
-    result_label.config(text="")
+    # Destroy to verify clean screen
+    screen_manager.clean(question_section)
     question = repo.get_questionLLM()
-    print("question: ", question)
+    print("question: ", question.question)
     screen_manager.screen_updater(app, question_section, actual_game, status_label, question, check_answer)
 
-result_label = ttk.Label(question_section)
+
+result_frame = ttk.Frame(app)
+result_label = ttk.Label(result_frame)
+result_label.grid(row=7, column=2)
 def check_answer(a, b):
     print(a, b)
     if a == b:
@@ -45,11 +49,11 @@ def check_answer(a, b):
         root.after(2000, display_next_question)
     else:
         result_label.config(text="Incorrect.")
-    result_label.grid(row=7, column=2)
 
 display_next_question()
 
 app.pack()
 question_section.pack()
+result_frame.pack()
 
 root.mainloop()
