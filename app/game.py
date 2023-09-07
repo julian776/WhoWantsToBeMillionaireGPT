@@ -21,10 +21,6 @@ class game_manager(game):
         cash = (actual_game.get_round())*multiplier
         actual_game._round += 1
         actual_game._cash += cash
-        screen_manager.clean()
-        print("\n\n  Earned ", cash)
-        sleep(1.2)
-        screen_manager.clean()
 
     def validate_answer(actual_game, answer, question, user):
         if answer == question[5][0]:
