@@ -3,52 +3,53 @@ from app.saver import saver
 from app.loaders import loaders
 from app.screen_manager import screen_manager  # Easy notation
 import tkinter as tk
+from tkinter import ttk
 from dotenv import load_dotenv
 from questions.questions_repository import QuestionsRepository
 
-load_dotenv()
+load_dotenv("./.env")
 
 QUESTIONS = ["questions1.txt", "questions2.txt", "questions3.txt", "questions4.txt", "questions5.txt"]
 SAVE_FILE = "save/save.txt"
 
 # Create a Tkinter window
 root = tk.Tk()
-root.geometry("800x600")
+root.geometry("850x630")
+
+style = ttk.Style(root)
+style.theme_use("clam")
 
 # Create frames
-app = tk.Frame(root)
-question_section = tk.Frame(app)
+app = ttk.Frame(root)
+question_section = ttk.Frame(app)
 
-status_label = tk.Label(root, text="")
+status_label = ttk.Label(root, text="")
 status_label.pack()
-
-answer_entry = tk.Entry(root, width=30)
-answer_entry.pack()
 
 actual_game = game.game(1, 00)
 question = None
 
 repo = QuestionsRepository()
 def display_next_question():
-    question = repo.get_questionChatGPT()
+    result_label.config(text="")
+    question = repo.get_questionLLM()
     print("question: ", question)
     screen_manager.screen_updater(app, question_section, actual_game, status_label, question, check_answer)
 
+result_label = ttk.Label(question_section)
 def check_answer(a, b):
     print(a, b)
-    result_label = tk.Label(question_section)
     if a == b:
-        result_label.config(text="Correct!", fg="green")
+        game.game_manager.next_round(actual_game)
+        result_label.config(text="Correct!")
+        root.after(2000, display_next_question)
     else:
-        result_label.config(text="Incorrect.", fg="red")
+        result_label.config(text="Incorrect.")
     result_label.grid(row=7, column=2)
-
-    root.after(2000, display_next_question)
 
 display_next_question()
 
 app.pack()
 question_section.pack()
 
-# Start the Tkinter event loop
 root.mainloop()

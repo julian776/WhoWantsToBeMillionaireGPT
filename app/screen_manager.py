@@ -1,20 +1,20 @@
 from time import sleep
 from os import system, name
-import tkinter as tk
+from tkinter import ttk
 
 from questions.question import Question
 
 class screen_manager:
     def show_question(frame, question: Question, check_answer):
         # Create a label to display the question
-        question_label = tk.Label(frame, text=question.question, wraplength=300, bg="blue")
+        question_label = ttk.Label(frame, text=question.question, wraplength=300)
         question_label.grid(row=2, column=2)
 
         # Create buttons for the multiple-choice options
         option_buttons = []
         row=3
         for i in ['a', 'b', 'c', 'd']:
-            option_button = tk.Button(frame, text=question.options[i], command= lambda a=i, b=question.answer: check_answer(a,b))
+            option_button = ttk.Button(frame, text=question.options[i], command= lambda a=i, b=question.answer: check_answer(a,b))
             option_buttons.append(option_button)
             option_button.grid(row=row, column=2)
             row+=1
