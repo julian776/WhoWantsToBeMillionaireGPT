@@ -1,46 +1,37 @@
 
 from questions.question import Question
+import json
 import os
 import openai
-import json
 
 # Load your API key from an environment variable or secret management service
-openai.api_key = os.getenv("OPENAI_API_KEY")
+openai.api_key = os.getenv("API_KEY")
 
 class QuestionsRepository:
     def __init__(self) -> None:
         pass
     
-    def get_questionChatGPT(self) -> Question:
+    def get_questionLLM(self) -> Question:
         """
-        load_questionChatGPT get one
+        load_questionLLM get one
         question requesting one AI LLM
         """
         
-        propmt = """Vas a ser el presentador de ¿Quién cree ser millonario? Dame una pregunta aleatoria con la respuesta, cuatro opciones de respuesta, y la respuesta correcta. Solamente respóndeme un JSON con lo que te acabo de explicar. No me saludes, no me agradezcas, no digas nada extra. Responde en español.
-Ejemplo: {
-  "question": "¿Cuál es el capital de Francia?",
+        prompt = """Give me a random question. Just answer me a JSON with what I just explained to you. Don't greet me, don't thank me, don't say anything extra. Answer in Spanish.
+Example: {
+  "question": "What is the capital of France?",
   "answer": "b",
   "options": {
-    "a": "Londres",
-    "b": "París",
-    "c": "Berlín",
+    "a": "London",
+    "b": "Paris",
+    "c": "Berlin",
     "d": "Madrid"
   }
-}"""
-        # messages = [
-        #         {"role": "user", "content": prompt }
-        #     ]
+}"""  
+        response = openai.ChatCompletion.create(model="gpt-3.5-turbo", messages=[{"role": "user", "content": prompt}])
+        questionText = response["choices"][0]["message"]["content"]
 
-        # chat_completion = openai.ChatCompletion.create(
-        #     model="gpt-3.5-turbo",
-        #     messages=messages
-        #     )
-        
-        # x = json.loads(chat_completion["choices"][0]["message"]["content"])
-
-        x = json.loads('{\"question\": \"¿Cuál es el capital de Francia?\",\"answer\": \"b\",\"options\": {\"a\": \"Londres\",\"b\": \"París\",\"c\": \"Berlín\",\"d\": \"Madrid\"}}')
-        print("fdhd", x["options"])
+        x = json.loads(questionText)
         return Question(
             x["question"], 
             x["answer"],
