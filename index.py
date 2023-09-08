@@ -1,6 +1,4 @@
 from app import game
-from app.saver import saver
-from app.loaders import loaders
 from app.screen_manager import screen_manager  # Easy notation
 import tkinter as tk
 from tkinter import ttk
@@ -8,9 +6,6 @@ from dotenv import load_dotenv
 from questions.questions_repository import QuestionsRepository
 
 load_dotenv("./.env")
-
-QUESTIONS = ["questions1.txt", "questions2.txt", "questions3.txt", "questions4.txt", "questions5.txt"]
-SAVE_FILE = "save/save.txt"
 
 # Create a Tkinter window
 root = tk.Tk()
