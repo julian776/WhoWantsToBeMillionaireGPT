@@ -1,11 +1,12 @@
 from time import sleep
-from app.saver import saver
-from app.screen_manager import screen_manager
+from app.saver import Saver
+from .screen_manager import ScreenManager
 
-class game:
-    def __init__(self, round, cash):
+class Game:
+    def __init__(self, round, cash, username):
         self._round = round
         self._cash = cash
+        self.username = username
 
     def get_cash(self):
         return self._cash
@@ -13,7 +14,7 @@ class game:
     def get_round(self):
         return self._round
 
-class game_manager(game):
+class GameManager(Game):
     def next_round(actual_game):
         multiplier = 1750
         if actual_game.get_round() == 5:
@@ -22,16 +23,16 @@ class game_manager(game):
         actual_game._round += 1
         actual_game._cash += cash
 
-    def validate_answer(actual_game, answer, question, user):
+    def validate_answer(self, actual_game, answer, question, user):
         if answer == question[5][0]:
-            game_manager.next_round(actual_game)
+            self.next_round(actual_game)
         elif answer == "save":
-            saver(actual_game, user, file="save.txt")
+            Saver(actual_game, user, file="save.txt")
             exit("Saved succesful")
         else: 
-            screen_manager.clean()
+            ScreenManager.clean()
             sleep(0.55)
-            saver(actual_game, user, file="legend.txt")
+            Saver(actual_game, user, file="legend.txt")
             exit('\n\n  Game Over')
     
     
