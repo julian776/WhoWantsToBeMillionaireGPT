@@ -1,11 +1,12 @@
+from dotenv import load_dotenv, find_dotenv
+load_dotenv('.env')
+
 from app import game
 from app.screen_manager import screen_manager  # Easy notation
 import tkinter as tk
 from tkinter import ttk
-from dotenv import load_dotenv
 from questions.questions_repository import QuestionsRepository
 
-load_dotenv("./.env")
 
 # Create a Tkinter window
 root = tk.Tk()

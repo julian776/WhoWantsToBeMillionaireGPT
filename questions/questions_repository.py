@@ -2,10 +2,10 @@
 from questions.question import Question
 import json
 import os
-import openai
+from openai import OpenAI
 
-# Load your API key from an environment variable or secret management service
-openai.api_key = os.getenv("API_KEY")
+api_key = os.environ.get("OPENAI_API_KEY")
+client = OpenAI(api_key=api_key)
 
 class QuestionsRepository:
     def __init__(self) -> None:
@@ -28,8 +28,16 @@ Example: {
     "d": "Madrid"
   }
 }"""  
-        response = openai.ChatCompletion.create(model="gpt-3.5-turbo", messages=[{"role": "user", "content": prompt}])
-        questionText = response["choices"][0]["message"]["content"]
+        completion = client.chat.completions.create(
+          model="gpt-3.5-turbo",
+          messages=[
+            {
+              "role": "user",
+             	"content": prompt
+            },
+            ],
+          )
+        questionText = completion.choices[0].message.content
 
         x = json.loads(questionText)
         return Question(
